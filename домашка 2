@@ -3,24 +3,103 @@
 (одинаково читается слева направо и справа налево). Если строка не является палиндромом, то указать, 
 начиная с каких символов (индекс и значение) текст не формирует палиндром.
 
+def main():
 
+    text = input("Введите строку для проверки: ").strip()
+    
+    # Убираем пробелы и приводим к нижнему регистру для проверки
+    cleaned_text = text.replace(" ", "").lower()
+    
+    if cleaned_text == cleaned_text[::-1]:
+        print("✓ Эта строка является палиндромом!")
+    else:
+        print("✗ Эта строка НЕ является палиндромом.")
+        
+        n = len(cleaned_text)
+        for i in range(n // 2):
+            left_char = cleaned_text[i]
+            right_char = cleaned_text[n - 1 - i]
+            
+            if left_char != right_char:
+
+                left_pos = text.lower().replace(" ", "").index(left_char, i)
+                right_pos = text.lower().replace(" ", "").index(right_char, n - 1 - i)
+                
+                print(f"   Несовпадение на позициях {left_pos} и {right_pos}:")
+                print(f"   '{text[left_pos]}' ≠ '{text[right_pos]}'")
+                break
+
+if __name__ == "__main__":
+    main()
 
 Задание №2
 Реализуйте функцию, которая принимает на вход строку и возвращает словарь с количеством слов, букв,
 цифр, пробелов и знаков препинания в ней. Учтите, что слова разделяются одним или несколькими пробелами.
 Если строка заканчивается или начинается с несколькими пробелами, функция должна их убрать перед обработкой.
 
+def analyze_string(text):
+    text = text.strip()
+    stats = {'words': 0, 'letters': 0, 'digits': 0, 'spaces': 0, 'punctuation': 0}
+    
+    if text:
+        stats['words'] = len(text.split())
+        for char in text:
+            if char.isalpha(): stats['letters'] += 1
+            elif char.isdigit(): stats['digits'] += 1
+            elif char.isspace(): stats['spaces'] += 1
+            elif char in '.,!?;:"\'()-': stats['punctuation'] += 1
+    
+    return stats
+
+text = input("Введите строку: ")
+result = analyze_string(text)
+print(f"Слов: {result['words']}, Букв: {result['letters']}, Цифр: {result['digits']}, Пробелов: {result['spaces']}, Знаков: {result['punctuation']}")
+
 
 Задание №3
 Напишите программу, которая преобразует все гласные буквы в строке в заглавные, 
 а все согласные — в строчные. Используйте только стандартные методы строк.
 
+def main():
+    text = input("Введите строку: ")
+    result = ""
+    
+    for char in text:
+        lower_char = char.lower()
+        if lower_char in 'аеёиоуыэюяaeiou':
+            result += lower_char.upper()
+        elif char.isalpha():
+            result += lower_char
+        else:
+            result += char
+    
+    print("Результат:", result)
 
+if __name__ == "__main__":
+    main()
 
 Задание №4
 Напишите программу, которая парсит введённую пользователем строку вида "ДД.ММ.ГГГГ ЧЧ:ММ::СС" и 
 выводит на экран день, месяц, год, часы, минуты и секунды на отдельных строках.
 
+def main():
+    date_time = input("Введите дату и время (ДД.ММ.ГГГГ ЧЧ:ММ:СС): ")
+
+    date_part, time_part = date_time.split()
+
+    day, month, year = date_part.split('.')
+
+    hours, minutes, seconds = time_part.split(':')
+
+    print(f"День: {day}")
+    print(f"Месяц: {month}")
+    print(f"Год: {year}")
+    print(f"Часы: {hours}")
+    print(f"Минуты: {minutes}")
+    print(f"Секунды: {seconds}")
+
+if __name__ == "__main__":
+    main()
 
 Задание №5
 Реализуйте функцию, которая принимает на вход две строки от пользователя, выделяет оттуда слова,
@@ -28,3 +107,31 @@
 должна написать список слов, которые есть в одной строке, но нет в другой (и наоборот), либо написать,
 что все слова присутсвуют в обеих строках. Программа должна считать символы одинаковыми независимо отих регистра
 и не учитывать знаки припенания. Например: строки "ТеК.сТ ,проверка" и "ПРОВЕРКА тЕкст;" должны считаться равными.
+
+def clean_text(text):
+
+    import string
+
+    return text.translate(str.maketrans('', '', string.punctuation)).lower()
+
+def compare_strings():
+    # Получаем две строки от пользователя
+    str1 = input("Введите первую строку: ")
+    str2 = input("Введите вторую строку: ")
+
+    words1 = set(clean_text(str1).split())
+    words2 = set(clean_text(str2).split())
+
+    unique_to_str1 = words1 - words2
+    unique_to_str2 = words2 - words1
+    
+    if not unique_to_str1 and not unique_to_str2:
+        print("Все слова присутствуют в обеих строках")
+    else:
+        if unique_to_str1:
+            print(f"Слова, которые есть только в первой строке: {', '.join(unique_to_str1)}")
+        if unique_to_str2:
+            print(f"Слова, которые есть только во второй строке: {', '.join(unique_to_str2)}")
+
+if __name__ == "__main__":
+    compare_strings()
